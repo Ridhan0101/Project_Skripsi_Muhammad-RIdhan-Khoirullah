@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hasil Analisis</title>
+    <link rel="icon" href="static/img/RIZAN_858_SNACK.png" type="image/png">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/analyze.css">
+</head>
+<body>
+    {% include 'sidebar.html' %}
+
+    <div class="container mt-5">
+        <h2>Atur Threshold untuk Analisis</h2>
+        <form method="POST" action="{{ url_for('analyze') }}">
+            <div class="form-group">
+                <label for="support">Minimum Support</label>
+                <input type="number" name="support" step="0.001" class="form-control" id="support" placeholder="Contoh: 0.1" required>
+            </div>
+            <div class="form-group">
+                <label for="confidence">Minimum Confidence</label>
+                <input type="number" name="confidence" step="0.001" class="form-control" id="confidence" placeholder="Contoh: 0.5" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Analisis Transaksi</button>
+        </form>
+
+        {% with messages = get_flashed_messages(with_categories=True) %}
+        {% if messages %}
+        <div class="mt-4">
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show flash-message" role="alert">
+                    <strong>{{ category | capitalize }}:</strong> {{ message }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+    
+        {% if results %}
+            {% if results.error %}
+                <div class="alert mt-4 alert-custom {{ 'alert-warning' if 'invalid_range' in results.error else 'alert-danger' }} flash-message" role="alert">
+                    {% if results.error == 'no_association_patterns' %}
+                        <strong>Peringatan:</strong>
+                        <p>Tidak ada pola asosiasi yang ditemukan dengan nilai parameter yang diberikan. Cobalah menyesuaikan nilai <strong>Support</strong> dan <strong>Confidence</strong> untuk menemukan pola yang relevan.</p>
+                    {% elif 'invalid_range' in results.error %}
+                        <strong>Kesalahan:</strong>
+                        <p>Nilai <strong>Support</strong> dan <strong>Confidence</strong> harus berada dalam rentang 0 hingga 1. Pastikan nilai yang dimasukkan valid.</p>
+                    {% else %}
+                        <p>{{ results.error }}</p>
+                    {% endif %}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            {% else %}
+            
+                <div class="card mt-4">
+                    <div class="card-body">
+                        <h4 class="card-title">Hasil Analisis Pola Asosiasi</h4>
+                        <h5 class="text-muted">
+                            Minimum Support: {{ request.form.get('support', '0.1') }},
+                            Minimum Confidence: {{ request.form.get('confidence', '0.5') }}
+                        </h5>
+
+                        {% if results.item_supports %}
+                            <h5 class="mt-4">Support Per Itemset (Single Itemsets)</h5>
+                            <div class="table-responsive">
+                                <table class="table table-bordered mt-3">
+                                    <thead>
+                                        <tr>
+                                            <th>Item</th>
+                                            <th>Support</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for item, support in results.item_supports.items() %}
+                                            {% if loop.index <= 10 %}
+                                                <tr>
+                                                    <td>{{ item }}</td>
+                                                    <td>{{ support }}</td>
+                                                </tr>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% else %}
+                            <p class="text-muted">Tidak ada data support per item yang tersedia.</p>
+                        {% endif %}
+
+                        <h4 class="card-title">Support Per Itemset (2-itemsets)</h4>
+                        {% if results.two_itemsets %}
+                            <div class="table-responsive">
+                                <table class="table table-bordered mt-3">
+                                    <thead>
+                                        <tr>
+                                            <th>Itemset</th>
+                                            <th>Support</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for itemset in results.two_itemsets %}
+                                            {% if loop.index <= 10 %}
+                                                <tr>
+                                                    <td>{{ itemset.itemsets }}</td>
+                                                    <td>{{ itemset.support }}</td>
+                                                </tr>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% else %}
+                            <p class="text-muted">Tidak ada 2-itemsets yang memenuhi kriteria.</p>
+                        {% endif %}
+
+                        <h4 class="card-title">Support Per Itemset (3-itemsets)</h4>
+                        {% if results.three_itemsets %}
+                            <div class="table-responsive">
+                                <table class="table table-bordered mt-3">
+                                    <thead>
+                                        <tr>
+                                            <th>Itemset</th>
+                                            <th>Support</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for itemset in results.three_itemsets %}
+                                            {% if loop.index <= 10 %}
+                                                <tr>
+                                                    <td>{{ itemset.itemsets }}</td>
+                                                    <td>{{ itemset.support }}</td>
+                                                </tr>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% else %}
+                            <p class="text-muted">Tidak ada 3-itemsets yang memenuhi kriteria.</p>
+                        {% endif %}
+
+                        <h5 class="mt-4">Daftar Pola Asosiasi</h5>
+                        {% if results.pola_asosiasi %}
+                            <div class="table-responsive">
+                                <table class="table table-bordered mt-3">
+                                    <thead>
+                                        <tr>
+                                            <th>No</th>
+                                            <th>Antecedent</th>
+                                            <th>Consequent</th>
+                                            <th>Support</th>
+                                            <th>Confidence</th>
+                                            <th>Lift</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for rule in results.pola_asosiasi %}
+                                            <tr>
+                                                <td>{{ loop.index }}</td>
+                                                <td>{{ rule.antecedents }}</td>
+                                                <td>{{ rule.consequents }}</td>
+                                                <td>{{ rule.support }}</td>
+                                                <td>{{ rule.confidence }}</td>
+                                                <td>{{ rule.lift }}</td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% else %}
+                            <div class="alert alert-danger mt-3" role="alert">
+                                Tidak ditemukan pola asosiasi yang memenuhi kriteria minimum support dan confidence.
+                            </div>
+                        {% endif %}
+
+                        <h5 class="mt-4">Insight Bisnis</h5>
+                        {% if results.insight_bisnis %}
+                            <div class="table-responsive" style="max-height: 200px; overflow-y: auto;">
+                                <ul>
+                                    {% for insight in results.insight_bisnis %}
+                                        <li>{{ insight }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% else %}
+                            <p>Tidak ada insight bisnis yang tersedia.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
+        {% endif %}
+
+        {% if plot_url %}
+            <div class="card mt-4">
+                <div class="card-body">
+                    <h5 class="card-title">Diagram Pola Asosiasi: Confidence dan Lift</h5>
+                    <img src="data:image/png;base64,{{ plot_url }}" alt="Association Rules Plot" class="img-fluid">
+                </div>
+            </div>
+        {% endif %}
+
+        <div class="card mt-5 mb-5">
+            <div class="card-body text-right">
+                {% if results and results.pola_asosiasi %}
+                    <form method="POST" action="{{ url_for('export_pdf') }}" class="d-inline-block mr-2">
+                        <button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#successModal" aria-label="Export PDF">Export PDF</button>
+                    </form>
+                {% endif %}
+                <a href="{{ url_for('index') }}" class="btn btn-secondary" aria-label="Exit">Exit</a>
+            </div>
+        </div>
+
+        <div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="successModalLabel">Export PDF Sukses</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        File PDF berhasil diunduh.
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    </div>
+</body>
+</html>

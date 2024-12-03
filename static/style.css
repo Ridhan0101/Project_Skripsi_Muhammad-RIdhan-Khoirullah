@@ -1,0 +1,334 @@
+body {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    background-color: #ffffff;
+    color: #000000;
+    margin: 0;
+    padding: 0;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+.navbar-brand {
+    color: #000000; 
+}
+
+.navbar-light.bg-light {
+    background-color: #f8f9fa !important;
+}
+
+body.dark-mode {
+    background-color: #2c2c2c;
+    color: #ffffff;
+}
+
+body.dark-mode .navbar-light.bg-light {
+    background-color: #343a40 !important;
+}
+
+body.dark-mode .navbar-brand {
+    color: #ffffff; 
+}
+
+.container {
+    width: 85%;
+    margin: 40px auto;
+    padding: 30px;
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+h1, h2 {
+    color: #343a40;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    margin-top: 15px;
+    font-weight: 600;
+    color: #495057;
+}
+
+input, select, button {
+    margin-top: 10px;
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 4px;
+    border: 1px solid #ced4da;
+}
+
+input:focus, select:focus, button:focus {
+    outline: none;
+    border-color: #80bdff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.25);
+}
+
+button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+.table-striped {
+    margin-top: 20px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.table-striped th, .table-striped td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.table-striped thead {
+    background-color: #007bff;
+    color: #ffffff;
+}
+
+.table-striped tbody tr:hover {
+    background-color: #f1f1f1;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.modal-header {
+    background-color: #007bff;
+    color: #ffffff;
+}
+
+.modal-content {
+    border-radius: 8px;
+}
+
+.modal-body p {
+    font-size: 16px;
+    margin: 10px 0;
+}
+
+.navbar {
+    background-color: #007bff;
+}
+
+.navbar .navbar-brand {
+    color: #ffffff;
+    font-weight: 700;
+}
+
+.navbar .navbar-brand:hover {
+    color: #d4d4d4;
+}
+
+.transaction-item {
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+}
+
+#analysisResult {
+    background-color: #e9ecef;
+    padding: 15px;
+    border-radius: 5px;
+}
+
+#dynamic-form .form-group {
+    margin-bottom: 1rem;
+}
+body {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    background-color: #ffffff;
+    color: #000000;
+    margin: 0;
+    padding: 0;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+.navbar-brand {
+    color: #000000; 
+}
+
+.navbar-light.bg-light {
+    background-color: #f8f9fa !important;
+}
+
+body.dark-mode {
+    background-color: #2c2c2c;
+    color: #ffffff;
+}
+
+body.dark-mode .navbar-light.bg-light {
+    background-color: #343a40 !important;
+}
+
+body.dark-mode .navbar-brand {
+    color: #ffffff; 
+}
+
+.container {
+            max-width: 900px; /* Set max width for the container */
+            margin: 40px auto;
+            padding: 30px;
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+h1, h2 {
+    color: #343a40;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+form {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 20px; 
+        }
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    margin-top: 15px;
+    font-weight: 600;
+    color: #495057;
+}
+
+input, select, button {
+    margin-top: 10px;
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 4px;
+    border: 1px solid #ced4da;
+}
+
+input:focus, select:focus, button:focus {
+    outline: none;
+    border-color: #80bdff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.25);
+}
+
+button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+.table-striped {
+    margin-top: 20px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.table-striped th, .table-striped td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.table-striped thead {
+    background-color: #007bff;
+    color: #ffffff;
+}
+
+.table-striped tbody tr:hover {
+    background-color: #f1f1f1;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.modal-header {
+    background-color: #007bff;
+    color: #ffffff;
+}
+
+.modal-content {
+    border-radius: 8px;
+}
+
+.modal-body p {
+    font-size: 16px;
+    margin: 10px 0;
+}
+
+.navbar {
+    background-color: #007bff;
+}
+
+.navbar .navbar-brand {
+    color: #000000;
+    font-weight: 700;
+}
+
+.navbar .navbar-brand:hover {
+    color: #d4d4d4;
+}
+
+.transaction-item {
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+}
+
+#analysisResult {
+    background-color: #e9ecef;
+    padding: 15px;
+    border-radius: 5px;
+}
+
+#dynamic-form .form-group {
+    margin-bottom: 1rem;
+}
+.pagination {
+    flex-wrap: nowrap; /* Mencegah elemen berpindah ke baris baru */
+}
+
+@media (max-width: 768px) {
+    .pagination {
+        justify-content: center; /* Pusatkan pagination pada layar kecil */
+        margin-top: 10px; /* Tambahkan jarak atas untuk pagination */
+    }
+}
+
+@media (min-width: 769px) {
+    .pagination {
+        margin-right: auto; /* Pindahkan pagination ke kanan pada layar lebar */
+        margin-right: 20px; /* Memberikan sedikit ruang dari tepi kanan */
+    }
+}

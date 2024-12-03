@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Filter Data</title>
+    <link rel="icon" href="static/img/RIZAN_858_SNACK.png" type="image/png">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="static/style.css">
+</head>
+<body>
+    {% include 'sidebar.html' %}
+    <div class="container">
+        <div class="d-flex align-items-center my-4">
+            <img src="static/img/RIZAN_858_SNACK.png" alt="Logo UMKM Rizan 858 Snack" style="width: 150px; height: auto; margin-right: 20px;">
+            <h1>Filter data Transaksi Barang Keripik dan Kerupuk UMKM Rizan 858 Snack</h1>
+        </div>
+        <h2>Filter Transaksi</h2>
+        <form method="get" action="{{ url_for('filter_data') }}">
+            <div class="form-group">
+                <label for="filter_toko">Filter Toko:</label>
+                <select name="filter_toko" id="filter_toko" class="form-control">
+                    <option value="">Semua Toko</option>
+                    {% for toko in unique_toko %}
+                        <option value="{{ toko }}" {% if toko == filter_toko %}selected{% endif %}>{{ toko }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="filter_produk">Filter Produk:</label>
+                <select name="filter_produk" id="filter_produk" class="form-control">
+                    <option value="">Semua Produk</option>
+                    {% for produk in unique_produk %}
+                    <option value="{{ produk }}" {% if filter_produk == produk %}selected{% endif %}>{{ produk }}</option>
+                    {% endfor %}
+                </select>
+            </div>            
+            <div class="form-group">
+                <label for="order">Urutkan Tanggal Transaksi:</label>
+                <select name="order" id="order" class="form-control">
+                    <option value="asc" {% if order == 'asc' %}selected{% endif %}>Ascending (Paling Lama)</option>
+                    <option value="desc" {% if order == 'desc' %}selected{% endif %}>Descending (Paling Baru)</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-success">Filter</button>
+        </form>
+        
+        <!--Tampilan Data Transaksi-->
+        <h2 class="mt-5">Daftar Transaksi</h2>
+        <table class="table table-striped table-sm">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Produk</th>
+                    <th>Tanggal Transaksi</th>
+                    <th>Toko</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for transaction in transactions %}
+                <tr>
+                    <td>{{ transaction.id }}</td>
+                    <td>
+                        {% for item in transaction.produk.split(', ') %}
+                        <div>{{ item }}</div>
+                        {% endfor %}
+                    </td>
+                    <td>{{ transaction.tanggal_transaksi }}</td>
+                    <td>{{ transaction.toko }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="row mt-4">
+            <div class="col-sm-12 d-flex justify-content-between align-items-center mb-3">
+                <!-- Tombol Pindah Halaman -->
+                <nav class="ms-auto">
+                    <ul class="pagination mb-0 mt-2" style="margin-left: 20px;"> <!-- Tambahkan margin kiri pada pagination -->
+                        {% if page > 1 %}
+                        <li class="page-item">
+                            <a class="page-link" href="{{ url_for('index', page=page-1, filter_toko=filter_toko, filter_produk=filter_produk, order=order) }}">Previous</a>
+                        </li>
+                        {% endif %}
+                        
+                        {% for p in range(1, (total_transactions + limit - 1) // limit + 1) %}
+                        <li class="page-item {% if p == page %}active{% endif %}">
+                            <a class="page-link" href="{{ url_for('index', page=p, filter_toko=filter_toko, filter_produk=filter_produk, order=order) }}">{{ p }}</a>
+                        </li>
+                        {% endfor %}
+                        
+                        {% if page < (total_transactions + limit - 1) // limit %}
+                        <li class="page-item">
+                            <a class="page-link" href="{{ url_for('index', page=page+1, filter_toko=filter_toko, filter_produk=filter_produk, order=order) }}">Next</a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+                <a href="{{ url_for('index') }}" class="btn btn-secondary" aria-label="Exit">Exit</a>
+            </div>
+        </div>       
+</body>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/side_bar.css">
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar hidden" id="sidebar">
+        <h3 class="text-center"><a href="{{ url_for('index') }}">Rizan 858 SNACK</a></h3>
+        <ul class="nav flex-column mt-4">
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('index') }}">Kelola Transaksi</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('filter_data') }}">Filter Data</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('analyze') }}">Analisis Transaksi</a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Button to open/close the sidebar -->
+    <button class="toggle-btn" id="toggle-btn" onclick="toggleSidebar()">☰</button>
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const content = document.getElementById('content');
+            const toggleBtn = document.getElementById('toggle-btn');
+            
+            sidebar.classList.toggle('hidden');
+            content.classList.toggle('shifted');
+            
+            // Move the toggle button outside or inside the sidebar based on sidebar visibility
+            if (sidebar.classList.contains('hidden')) {
+                toggleBtn.style.left = '20px'; // Position outside the sidebar
+            } else {
+                toggleBtn.style.left = '250px'; // Position inside the sidebar
+            }
+        }
+    </script>
+</body>
+</html>

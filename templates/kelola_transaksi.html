@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manajemen Transaksi</title>
+    <link rel="icon" href="static/img/RIZAN_858_SNACK.png" type="image/png">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="static/style.css">
+</head>
+<body>
+    {% include 'sidebar.html' %}
+    <div class="container">
+        <div class="d-flex align-items-center my-4">
+            <img src="static/img/RIZAN_858_SNACK.png" alt="Logo UMKM Rizan 858 Snack" style="width: 150px; height: auto; margin-right: 20px;">
+            <h1>Manajemen Transaksi Barang Keripik dan Kerupuk UMKM Rizan 858 Snack</h1>
+        </div>
+
+        <div class="d-flex justify-content-end mb-3">
+            <button type="button" class="btn btn-primary me-2 d-flex align-items-center" data-bs-toggle="modal" data-bs-target="#addTransactionModal">
+                <i class="bi bi-plus-circle me-1"></i> Tambah Transaksi
+            </button>
+            <button type="button" class="btn btn-primary d-flex align-items-center" data-bs-toggle="modal" data-bs-target="#uploadTransactionModal">
+                <i class="bi bi-upload me-1"></i> Upload CSV
+            </button>
+        </div>
+        
+
+        <div class="modal fade" id="addTransactionModal" tabindex="-1" aria-labelledby="addTransactionModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addTransactionModalLabel">Tambah Data Transaksi</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="addTransactionForm" method="POST" action="/add_transaction">
+                            <div id="dynamic-form">
+                                <div class="form-group">
+                                    <label for="produk">Produk:</label>
+                                    <select class="form-control" id="produk" name="produk[]" required>
+                                        <option value="">Pilih Produk</option>
+                                        <option value="Kerupuk Udang Melati">Kerupuk Udang Melati</option>
+                                        <option value="Keripik Pisang">Keripik Pisang</option>
+                                        <option value="Kerupuk Udang Mawar">Kerupuk Udang Mawar</option>
+                                        <option value="Makaroni">Makaroni</option>
+                                        <option value="Keripik Singkong Asin">Keripik Singkong Asin</option>
+                                        <option value="Ring">Ring</option>
+                                        <option value="Sanjai Balado">Sanjai Balado</option>
+                                        <option value="Kerupuk Ikan">Kerupuk Ikan</option>
+                                        <option value="Kerupuk Jengkol">Kerupuk Jengkol</option>
+                                        <option value="Keripik Untir-Untir">Keripik Untir-Untir</option>
+                                        <option value="Kerupuk Seblak">Kerupuk Seblak</option>
+                                        <option value="Stick Keju">Stick Keju</option>
+                                        <option value="Keripik Singkong Pedas">Keripik Singkong Pedas</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-end">
+                                <button type="button" id="add-item" class="btn btn-info btn-sm mb-3">Tambah Item</button>
+                            </div>
+                            <div class="form-group">
+                                <label for="toko">Toko:</label>
+                                <select class="form-control" id="toko" name="toko" required>
+                                    <option value="">Pilih Toko</option>
+                                    <option value="Hypermart PSX">Hypermart PSX</option>
+                                    <option value="Fresh Market Sekip">Fresh Market Sekip</option>
+                                    <option value="Primo PI">Primo PI</option>
+                                    <option value="Indomart">Indomart</option>
+                                    <option value="Fresh Market Ulu">Fresh Market Ulu</option>
+                                    <option value="Farmers PTC">Farmers PTC</option>
+                                    <option value="Foodmart PIM">Foodmart PIM</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="tanggal_transaksi">Tanggal Transaksi:</label>
+                                <input type="date" class="form-control" id="tanggal_transaksi" name="tanggal_transaksi" required>
+                            </div>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                            <button type="submit" class="btn btn-primary">Tambah Transaksi</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Upload File CSV -->
+        <div class="modal fade" id="uploadTransactionModal" tabindex="-1" aria-labelledby="uploadTransactionModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2 class="mt-4">Upload File CSV</h2>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="uploadCsvForm" action="/upload_csv" method="POST" enctype="multipart/form-data">
+                            <div class="form-group">
+                                <label for="file" class="form-label">Pilih File CSV:</label>
+                                <input type="file" class="form-control" id="file" name="file" accept=".csv" required>
+                            </div>
+                            <div class="d-flex justify-content-end mt-3">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                <button type="submit" class="btn btn-primary btn-sm ms-2">Upload</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tampilan Data Transaksi -->
+        <div>
+            <h2 class="mt-5">Daftar Transaksi</h2>
+            <table class="table table-striped table-sm">
+                <thead>
+                    <tr>
+                        <th style="background-color: #007bff; color: white;">ID</th>
+                        <th style="background-color: #007bff; color: white;">Produk</th>
+                        <th style="background-color: #007bff; color: white;">Tanggal Transaksi</th>
+                        <th style="background-color: #007bff; color: white;">Toko</th>
+                        <th style="background-color: #007bff; color: white;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for transaction in transactions %}
+                    <tr>
+                        <td>{{ transaction.id }}</td>
+                        <td>
+                            {% for item in transaction.produk.split(', ') %}
+                            <div>{{ item }}</div>
+                            {% endfor %}
+                        </td>
+                        <td>{{ transaction.tanggal_transaksi }}</td>
+                        <td>{{ transaction.toko }}</td>
+                        <td>
+                            <button class="btn btn-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#editModal{{ transaction.id }}">Edit</button>
+                            <button class="btn btn-danger btn-sm" onclick="openDeleteModal('{{ transaction.id }}');">Hapus</button>
+                        </td>
+                    </tr>
+
+         <!-- Edit Modal -->
+        <div class="modal fade" id="editModal{{ transaction.id }}" tabindex="-1" aria-labelledby="editModalLabel{{ transaction.id }}" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editModalLabel{{ transaction.id }}">Edit Transaksi</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form action="{{ url_for('edit', id=transaction.id) }}" method="post">
+                                        {% set items = transaction.produk.split(', ') %}
+                                        {% for i in range(1, 6) %}
+                                        <div class="form-group">
+                                            <label for="produk{{ i }}">Produk {{ i }}:</label>
+                                            <select class="form-control" id="produk{{ i }}" name="produk{{ i }}">
+                                                <option value="">Pilih Produk</option>
+                                                <option value="Kerupuk Udang Melati" {% if items[i-1] == "Kerupuk Udang Melati" %}selected{% endif %}>Kerupuk Udang Melati</option>
+                                                <option value="Keripik Pisang" {% if items[i-1] == "Keripik Pisang" %}selected{% endif %}>Keripik Pisang</option>
+                                                <option value="Kerupuk Udang Mawar" {% if items[i-1] == "Kerupuk Udang Mawar" %}selected{% endif %}>Kerupuk Udang Mawar</option>
+                                                <option value="Makaroni" {% if items[i-1] == "Makaroni" %}selected{% endif %}>Makaroni</option>
+                                                <option value="Keripik Singkong Asin" {% if items[i-1] == "Keripik Singkong Asin" %}selected{% endif %}>Keripik Singkong Asin</option>
+                                                <option value="Ring" {% if items[i-1] == "Ring" %}selected{% endif %}>Ring</option>
+                                                <option value="Sanjai Balado" {% if items[i-1] == "Sanjai Balado" %}selected{% endif %}>Sanjai Balado</option>
+                                                <option value="Kerupuk Ikan" {% if items[i-1] == "Kerupuk Ikan" %}selected{% endif %}>Kerupuk Ikan</option>
+                                                <option value="Kerupuk Jengkol" {% if items[i-1] == "Kerupuk Jengkol" %}selected{% endif %}>Kerupuk Jengkol</option>
+                                                <option value="Keripik Untir-Untir" {% if items[i-1] == "Keripik Untir-Untir" %}selected{% endif %}>Keripik Untir-Untir</option>
+                                                <option value="Kerupuk Seblak" {% if items[i-1] == "Kerupuk Seblak" %}selected{% endif %}>Kerupuk Seblak</option>
+                                                <option value="Stick Keju" {% if items[i-1] == "Stick Keju" %}selected{% endif %}>Stick Keju</option>
+                                                <option value="Keripik Singkong Pedas" {% if items[i-1] == "Keripik Singkong Pedas" %}selected{% endif %}>Keripik Singkong Pedas</option>
+                                            </select>
+                                        </div>
+                                        {% endfor %}
+                                        <div class="form-group">
+                                            <label for="toko{{ transaction.id }}">Toko:</label>
+                                            <select class="form-control" id="toko{{ transaction.id }}" name="toko">
+                                                <option value="">Pilih Toko</option>
+                                                <option value="Hypermart PSX" {% if transaction.toko == "Hypermart PSX" %}selected{% endif %}>Hypermart PSX</option>
+                                                <option value="Fresh Market Sekip" {% if transaction.toko == "Fresh Market Sekip" %}selected{% endif %}>Fresh Market Sekip</option>
+                                                <option value="Primo PI" {% if transaction.toko == "Primo PI" %}selected{% endif %}>Primo PI</option>
+                                                <option value="Indomart" {% if transaction.toko == "Indomart" %}selected{% endif %}>Indomart</option>
+                                                <option value="Fresh Market Ulu" {% if transaction.toko == "Fresh Market Ulu" %}selected{% endif %}>Fresh Market Ulu</option>
+                                                <option value="Farmers PTC" {% if transaction.toko == "Farmers PTC" %}selected{% endif %}>Farmers PTC</option>
+                                                <option value="Foodmart PIM" {% if transaction.toko == "Foodmart PIM" %}selected{% endif %}>Foodmart PIM</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="tanggal_transaksi">Tanggal Transaksi:</label>
+                                            <input type="date" class="form-control" id="tanggal_transaksi" name="tanggal_transaksi" value="{{ transaction.tanggal_transaksi }}" required>
+                                        </div>
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                        <button type="submit" class="btn btn-primary">Simpan</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <!-- Tombol Pindah Tab dan Export CSV -->
+        <div class="row mt-4">
+            <div class="col-sm-12 d-flex justify-content-between align-items-center mb-3">
+                <div class="d-flex">
+                    <a href="{{ url_for('export_csv') }}" class="btn btn-primary me-2" id="exportCsvButton">Export CSV</a>
+                </div>
+                <!-- Pagination -->
+                <nav class="ms-auto">
+                    <ul class="pagination mb-0 mt-2" style="margin-left: 20px;">
+                        {% if page > 1 %}
+                        <li class="page-item">
+                            <a class="page-link" href="{{ url_for('kelola_transaksi', page=page-1, filter_toko=filter_toko, filter_produk=filter_produk, order=order) }}">Previous</a>
+                        </li>
+                        {% endif %}
+
+                        {% for p in range(1, (total_transactions + limit - 1) // limit + 1) %}
+                        <li class="page-item {% if p == page %}active{% endif %}">
+                            <a class="page-link" href="{{ url_for('kelola_transaksi', page=p, filter_toko=filter_toko, filter_produk=filter_produk, order=order) }}">{{ p }}</a>
+                        </li>
+                        {% endfor %}
+
+                        {% if page < (total_transactions + limit - 1) // limit %}
+                        <li class="page-item">
+                            <a class="page-link" href="{{ url_for('kelola_transaksi', page=page+1, filter_toko=filter_toko, filter_produk=filter_produk, order=order) }}">Next</a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            </div>
+        </div>
+        <!-- Modal Sukses Tambah Transaksi -->
+        <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="successModalLabel">Success</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="redirectToIndex()"></button>
+                    </div>
+                    <div class="modal-body">
+                        Transaksi Berhasil ditambahkan.
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="redirectToIndex()">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Modal Sukses Export CSV -->
+        <div class="modal fade" id="successExportModal" tabindex="-1" aria-labelledby="successExportModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="successExportModalLabel">Export CSV Sukses</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                         File CSV berhasil diunduh.
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Konfirmasi Hapus data transaksi -->
+        <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="deleteModalLabel">Konfirmasi Penghapusan</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Apakah Anda yakin ingin menghapus transaksi ini?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        <button type="button" id="confirmDeleteButton" class="btn btn-danger" onclick="confirmDelete()">Hapus</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Sukses Hapus Transaksi -->
+        <div class="modal fade" id="deleteSuccessModal" tabindex="-1" aria-labelledby="deleteSuccessModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="deleteSuccessModalLabel">Transaksi Dihapus</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Transaksi berhasil dihapus!
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" id="closeDeleteSuccessModal" data-bs-dismiss="modal">Tutup</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Modal Gagal Hapus Transaksi -->
+        <div class="modal fade" id="deleteErrorModal" tabindex="-1" aria-labelledby="deleteErrorModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="deleteErrorModalLabel">Error</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Terjadi kesalahan saat menghapus transaksi.
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+       <!-- Modal Sukses Upload CSV -->
+        <div class="modal fade" id="successUploadCSVModal" tabindex="-1" aria-labelledby="successUploadCSVModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="successUploadCSVModalLabel">Upload Success</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        File CSV berhasil diunggah.
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="refreshPage()">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Modal Gagal Edit Transaksi -->
+        <div class="modal fade" id="editErrorModal" tabindex="-1" aria-labelledby="editErrorModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editErrorModalLabel">Error</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body" id="editErrorMessage">
+                        Terjadi kesalahan saat mengedit transaksi.
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="static/script.js"></script>
+    </body>
+<script>
+var transactionIdToDelete;
+
+document.getElementById('exportCsvButton').addEventListener('click', function(event) {
+    event.preventDefault(); 
+    var successExportModal = new bootstrap.Modal(document.getElementById('successExportModal'));
+    successExportModal.show();
+    setTimeout(function() {
+        window.location.href = "{{ url_for('export_csv') }}"; 
+    }, 2000);
+});
+
+function openDeleteModal(id) {
+    transactionIdToDelete = id;
+    var deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+    deleteModal.show();
+}
+
+document.getElementById('confirmDeleteButton').addEventListener('click', function() {
+    var deleteModal = bootstrap.Modal.getInstance(document.getElementById('deleteModal'));
+    deleteModal.hide();
+    fetch('/delete/' + transactionIdToDelete, {
+        method: 'POST'
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.status === 'success') {
+            var deleteSuccessModal = new bootstrap.Modal(document.getElementById('deleteSuccessModal'));
+            deleteSuccessModal.show();
+            setTimeout(function() {
+                deleteSuccessModal.hide();}, 2000); 
+        } else {
+            document.getElementById('deleteErrorMessage').textContent = result.message;
+            var deleteErrorModal = new bootstrap.Modal(document.getElementById('deleteErrorModal'));
+            deleteErrorModal.show();
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        document.getElementById('deleteErrorMessage').textContent = 'Terjadi kesalahan saat menghapus transaksi.';
+        var deleteErrorModal = new bootstrap.Modal(document.getElementById('deleteErrorModal'));
+        deleteErrorModal.show();
+    });
+});
+document.getElementById('addTransactionForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const tanggal_transaksi = document.getElementById('tanggal_transaksi').value;
+    const toko = document.getElementById('toko').value;
+    const produkElements = document.querySelectorAll('select[name="produk[]"]');
+    const produk = Array.from(produkElements).map(select => select.value).filter(value => value);
+
+    if (!tanggal_transaksi || !toko || produk.length === 0) {
+        document.getElementById('errorMessage').textContent = 'Semua field harus diisi.';
+        let errorModal = new bootstrap.Modal(document.getElementById('errorModal'));
+        errorModal.show();
+        return;
+    }
+
+    const data = {
+        tanggal_transaksi: tanggal_transaksi,
+        produk: produk,
+        toko: toko
+    };
+    fetch('/add', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.message === 'Transaksi Berhasil ditambahkan') {
+            let successModal = new bootstrap.Modal(document.getElementById('successModal'));
+            successModal.show();
+        } else {
+            // Tampilkan pesan error dan arahkan ke kelola_transaksi
+            document.getElementById('errorMessage').textContent = result.message;
+            let errorModal = new bootstrap.Modal(document.getElementById('errorModal'));
+            errorModal.show();
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        document.getElementById('errorMessage').textContent = 'Terjadi kesalahan saat menambahkan transaksi.';
+        let errorModal = new bootstrap.Modal(document.getElementById('errorModal'));
+        errorModal.show();
+    });
+});
+
+function refreshPage() {
+    location.reload(); 
+}
+
+document.querySelector('#uploadCsvForm').addEventListener('submit', function(e) {
+    e.preventDefault(); // Mencegah form dari submit default
+
+    const formData = new FormData(this);
+
+    fetch('/upload_csv', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(result => {
+        console.log(result); 
+        if (result.message === 'CSV berhasil diunggah') {
+            let successUploadCSVModal = new bootstrap.Modal(document.getElementById('successUploadCSVModal'));
+            successUploadCSVModal.show();
+        } else {
+            document.getElementById('errorMessage').textContent = result.message;
+            let errorModal = new bootstrap.Modal(document.getElementById('errorModal'));
+            errorModal.show();
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        document.getElementById('errorMessage').textContent = 'Terjadi kesalahan saat mengunggah file CSV.';
+        let errorModal = new bootstrap.Modal(document.getElementById('errorModal'));
+        errorModal.show();
+    });
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    var status = "{{ status }}";
+    if (status === 'success') {
+        var successModal = new bootstrap.Modal(document.getElementById('successModal'));
+        successModal.show();
+    } else if (status === 'error') {
+        var errorModal = new bootstrap.Modal(document.getElementById('errorModal'));
+        errorModal.show();
+    }
+});
+</script>
+</html>
