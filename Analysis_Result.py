@@ -41,8 +41,8 @@ class AnalysisResult:
         rules['confidence'] = rules['confidence'].apply(self.round_to_four_decimals)
         rules['lift'] = rules['lift'].apply(self.round_to_four_decimals)
 
-        # Sort rules by confidence and lift in descending order
-        sorted_rules = rules.sort_values(by=['confidence', 'lift'], ascending=[False, False])
+        # Sort rules by lift in descending order
+        sorted_rules = rules.sort_values(by=['lift'], ascending=False)
 
         # Generate business insights
         insights = [
@@ -75,13 +75,29 @@ class AnalysisResult:
         results['plot_url'] = plot_url
 
         return results
-
+    
     def create_bar_chart(self, rules, min_support, min_confidence):
-        antecedents = [', '.join(rule['antecedents']) for rule in rules]
-        consequents = [', '.join(rule['consequents']) for rule in rules]
-        confidence = [rule['confidence'] for rule in rules]
-        lift = [rule['lift'] for rule in rules]
+        # Gabungkan data menjadi struktur yang dapat diurutkan
+        combined_data = [
+            {
+                "antecedents": ', '.join(rule['antecedents']),
+                "consequents": ', '.join(rule['consequents']),
+                "confidence": rule['confidence'],
+                "lift": rule['lift']
+            }
+            for rule in rules
+        ]
 
+        # Urutkan data berdasarkan lift secara menurun
+        sorted_data = sorted(combined_data, key=lambda x: (x['lift']), reverse=False)
+
+        # Pisahkan kembali data
+        antecedents = [item['antecedents'] for item in sorted_data]
+        consequents = [item['consequents'] for item in sorted_data]
+        confidence = [item['confidence'] for item in sorted_data]
+        lift = [item['lift'] for item in sorted_data]
+
+        # Buat label untuk sumbu y
         combined_labels = [f"{ante} → {con}" for ante, con in zip(antecedents, consequents)]
         num_rules = len(combined_labels)
 
@@ -96,18 +112,20 @@ class AnalysisResult:
         color_conf = plt.cm.Blues(0.6)
         color_lift = plt.cm.Oranges(0.6)
 
+        # Plotting bars
         bars1 = ax.barh(y_pos - bar_width/2, confidence, height=bar_width, color=color_conf, label='Confidence', alpha=0.85, edgecolor='darkblue')
         bars2 = ax.barh(y_pos + bar_width/2, lift, height=bar_width, color=color_lift, label='Lift', alpha=0.85, edgecolor='darkorange')
 
         ax.set_ylabel('Pola Asosiasi', fontweight='bold', fontsize=16, color='#34495e')
         ax.set_xlabel('Confidence dan Lift', fontweight='bold', fontsize=16, color='#34495e')
         ax.set_title(f'Diagram Pola Asosiasi: Confidence and Lift\n'
-                     f'Min Support: {min_support}, Min Confidence: {min_confidence}', 
-                     fontweight='bold', fontsize=18, color='#2c3e50', pad=20)
+                    f'Min Support: {min_support}, Min Confidence: {min_confidence}', 
+                    fontweight='bold', fontsize=18, color='#2c3e50', pad=20)
 
         ax.set_yticks(y_pos)
         ax.set_yticklabels(combined_labels, ha='right', fontsize=14, color='#2c3e50', rotation=0)
 
+        # Tampilkan nilai di atas batang
         for bar in bars1 + bars2:
             xval = bar.get_width()
             formatted_value = f"{xval:.4f}" if not xval.is_integer() else f"{xval:.1f}"
@@ -115,17 +133,20 @@ class AnalysisResult:
                     ha='left', va='center', fontsize=12, color='black', weight='bold',
                     path_effects=[patheffects.withStroke(linewidth=3, foreground="white")])
 
+        # Grid dan batas
         ax.xaxis.grid(True, linestyle='--', alpha=0.5, color='gray')
         max_x = max(max(confidence), max(lift))
         ax.set_xlim(0, max_x * 1.3)
         ax.margins(y=0.1)
 
+        # Legenda
         legend = ax.legend(loc='upper right', fontsize=14, frameon=True, facecolor='white', edgecolor='gray', fancybox=True)
         for text in legend.get_texts():
             text.set_fontweight('bold')
 
         plt.tight_layout(pad=3)
 
+        # Simpan diagram sebagai base64
         img = BytesIO()
         fig.savefig(img, format='png', bbox_inches='tight')
         img.seek(0)
@@ -136,4 +157,3 @@ class AnalysisResult:
     @staticmethod
     def round_to_four_decimals(x):
         return round(x, 4)
-

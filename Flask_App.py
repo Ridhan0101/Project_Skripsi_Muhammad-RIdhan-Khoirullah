@@ -8,10 +8,6 @@ from Analysis_Result import AnalysisResult
 import os
 import matplotlib
 matplotlib.use('Agg') 
-import matplotlib.pyplot as plt
-import base64
-from io import BytesIO
-import matplotlib.patheffects as patheffects 
 from flask_session import Session
 
 app = Flask(__name__)
@@ -108,7 +104,7 @@ def analyze():
 
         try:
             min_support = float(min_support)
-            min_confidence = float(min_confidence)
+            # min_confidence = float(min_confidence)
         except ValueError:
             flash("Nilai support dan confidence harus berupa angka desimal (misalnya, 0.01).")
             return redirect(url_for('analyze'))
@@ -121,9 +117,11 @@ def analyze():
         results = analysis_result.analyze_transaction_patterns(transactions, min_support, min_confidence)
 
         if 'pola_asosiasi' in results:
-            top_rules = sorted(results['pola_asosiasi'], key=lambda x: (x['confidence'], x['lift']), reverse=True)
-            if len(top_rules) > 10:
-                top_rules = top_rules[:10]
+            # Urutkan berdasarkan lift tertinggi
+            top_rules = sorted(results['pola_asosiasi'], key=lambda x: x['lift'], reverse=True)
+            print([rule['lift'] for rule in top_rules])
+            # Ambil 10 aturan teratas
+            top_rules = top_rules[:10]
             plot_url = analysis_result.create_bar_chart(top_rules, min_support, min_confidence)
 
         if not results.get('pola_asosiasi'):
@@ -155,7 +153,7 @@ def export_pdf():
     min_confidence = float(request.form.get('confidence', 0.5))
 
     if 'pola_asosiasi' in results:
-        top_rules = sorted(results['pola_asosiasi'], key=lambda x: (x['confidence'], x['lift']), reverse=True)
+        top_rules = sorted(results['pola_asosiasi'], key=lambda x: ( x['lift']), reverse=True)
         if len(top_rules) > 10:
             top_rules = top_rules[:10]
         plot_url = analysis_result.create_bar_chart(top_rules, min_support, min_confidence)
