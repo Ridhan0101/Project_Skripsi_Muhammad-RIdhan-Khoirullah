@@ -104,7 +104,7 @@ def analyze():
 
         try:
             min_support = float(min_support)
-            # min_confidence = float(min_confidence)
+            min_confidence = float(min_confidence)
         except ValueError:
             flash("Nilai support dan confidence harus berupa angka desimal (misalnya, 0.01).")
             return redirect(url_for('analyze'))
